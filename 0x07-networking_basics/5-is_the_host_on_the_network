@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Script
 if [ "$#" -lt "1" ]
 then
