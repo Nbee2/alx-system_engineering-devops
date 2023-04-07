@@ -4,20 +4,14 @@
 
 
 sudo apt-get update -y
-sudo apt-get upgrade -y
 sudo apt-get install nginx -y
 
-# Starting nginx service
-sudo service nginx start
 #
 # Redirection string
-new_string="replace_line /redirect_me https://www.youtube.com/watch?v=rv7uzsBm8zw"
+#new_string="location /redirect_me {\n\t\treturn 301  https://www.youtube.com/watch?v=rv7uzsBm8zw\n\t}"
 
 # Give the user ownership to website files for easy editing
-sudo sed -i "54i $new_string" /etc/nginx/sites-available/default
-
-# Restart nginx service - stop currently running nginx and start a new nginx
-sudo service nginx restart
+sudo sed -i '/server_name _;/a \\t location /redirect_me {\n\t\t return 301  https://www.youtube.com/watch?v=rv7uzsBm8zw;\n\t}' /etc/nginx/sites-available/default
 
 # Reload configuration - Nginx web server without actually stopping and starting the server
-sudo service nginx reload
+sudo service nginx restart
