@@ -1,38 +1,25 @@
 #!/usr/bin/env bash
-#configure a custom 404 page
+# Configures a new Nginx server to allow "Ceci n'est pas ume page" to be displayed on custom 404 page.
+# Redirected must be a "301 Moved Permanebtly"
 
-sudo apt-get update
-sudo apt-get -y install nginx
-ufw allow 'Nginx HTTP'
-chmod -R 755 /var/www
-echo 'Hello World' > /var/www/html/index.html
 
-new_config=\
-"server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
-               root /var/www/html;
-        index index.html index.htm index.nginx-debian.html;
-        server_name _;
-        location / {
-                try_files \$uri \$uri/ =404;
-        }
-        error_page 404 /404.html;
-        location  /404.html {
-            internal;
-        }
-        
-        if (\$request_filename ~ redirect_me){
-            rewrite ^ https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;
-        }
-}
-"
-echo "Ceci n'est pas une page" > /var/www/html/404.html
-echo "$new_config" > /etc/nginx/sites-available/default
+sudo apt-get update -y
+sudo apt-get install nginx -y
 
-if [ "$(pgrep nginx)" -le 0 ];
-then
-    service nginx start
-else
-    service nginx restart
-fi;
+# create a hello world page
+echo "Hello world!" |sudo tee /var/www/html/index.html
+
+# 404 page
+# custom_string="location /404 page {\n\t\treturn HTTP 404 error https://www.youtube.com/watch?v=rv7uzsBm8zw\n\t}"
+
+# Redirection page
+sudo sed -i '/server_name _;/a \\t location /redirect_me {\n\t\t return 301  https://www.youtube.com/watch?v=rv7uzsBm8zw;\n\t}' /etc/nginx/sites-available/default
+
+# Create a custom 404 page
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/custom_404.html
+
+# Configure Nginx to use the custom 404 page
+sudo sed -i '/server_name _;/a \        error_page 404 /custom_404.html;\n        location = /custom_404.html {\n                internal;\n        }' /etc/nginx/sites-available/default
+
+# Reload configuration - Nginx web server without actually stopping and starting the server
+sudo service nginx restart
