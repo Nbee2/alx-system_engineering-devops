@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Bash script that manage_my_process
+# Script writes I am alive! to the /tmp/my_process
+# In bertween every I am alive! message, the program should for 2 seconds
+
+start() {
+   echo "! am alive!"
+   screen -S 101-manage_my_process -m -d sh -c '101-manage_my_processdump -n -w /tmp/my_process.pcap'
+   sleep 2
+   echo "tcpdump started with PID of $(ps fax | grep tcpdump | grep -v grep | head -1 | awk '{print $1}') and logging to /tmp/file.pcap"
+   echo "started tcpdump ["$(tput setaf 2)OK$(tput sgr0)"]"
+}
+
+stop() {
+   echo "stopping tcpmonitor"
+   screen -X -S tcpmonitor quit
+   sleep 2
+   echo "tcpmonitor stopped ["$(tput setaf 2)OK$(tput sgr0)"]"
+}
+
+case "$1" in
+   start) start ;;
+   stop)  stop;;
+   *) echo "usage $0 start|stop" >&2
+      exit 1
+      ;;
+esac
