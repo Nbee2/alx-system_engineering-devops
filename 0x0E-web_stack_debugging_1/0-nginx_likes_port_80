@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Bash script with commands to automate your fix.
+
+# This command will remove the default configuration file for Nginx web server from the /etc/nginx/sites-enabled directory
+sudo rm /etc/nginx/sites-enabled/default
+
+# Creates a symbolic link default in the /etc/nginx/sites-enabled directory that points to the actual configuration fil in the /etc/nginx/sites-available directory
+sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+
+# Nginx Restart
+sudo service nginx restart
