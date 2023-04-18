@@ -1,0 +1,5 @@
+sudo vi /etc/sysctl.conf
+sudo sysctl -p
+sudo ufw allow proto tcp from any to 52.3.242.172 port 8080
+sudo vi /etc/ufw/before.rules
+sudo systemctl restart ufw
